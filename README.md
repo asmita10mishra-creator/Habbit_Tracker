@@ -31,24 +31,13 @@ Vanilla JavaScript (for interactivity and localStorage)
 habittracker.html   # Main HTML file containing structure, styles, and JS logic
 keep growing 550.jpeg   # Background image (optional aesthetic asset)
 
-▶️ How to Run
-
-Clone the repository:
-
-git clone https://github.com/your-username/habit-tracker.git
-cd habit-tracker
-
-
-Open habittracker.html in any modern browser.
-
-That’s it — no installation required! 🎉
 
 ✨ Future Improvements
 
-Allow tracking multiple habits at once.
+- Allow tracking multiple habits at once.
 
-Add weekly & yearly views.
+- Add weekly & yearly views.
 
-Enable dark mode.
+- Enable dark mode.
 
-Option to export/import data.
+- Option to export/import data.

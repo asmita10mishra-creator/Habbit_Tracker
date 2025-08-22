@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Habit Tracker</title>
+  <style>
+    body {
+        background-image: url("keep growing 550.jpeg");
+        background-size: 500px;
+        background-repeat: repeat;
+        background-blend-mode: lighten;
+        text-align: center;
+        font-family: "vintage-aesthetic", sans-serif;
+    }
+
+    h1 {
+      margin-top: 30px;
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .tracker-container {
+      display: inline-block;
+      padding: 20px;
+      border: 2px solid #999;
+      border-radius: 15px;
+      background-color: #1f4521;
+      box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .habit-title {
+      background-color: #f5f5dc;
+      padding: 10px;
+      font-weight: bold;
+      font-size: 18px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .days-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 40px);
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .day {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid black;
+      background-color: #f5f5dc;
+      font-size: 16px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .done {
+      background-color: #2e7d32; /* dark green */
+      color: white;
+    }
+
+    .counter {
+      font-weight: bold;
+      padding-right: 10px;
+    }
+
+    .reset-btn {
+      margin-top: 15px;
+      padding: 8px 15px;
+      background-color: #ddd;
+      border: 1px solid #999;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .reset-btn:hover {
+      background-color: #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <h1 id="monthTitle">Month</h1>
+  <h2>Monthly Habit Tracker</h2>
+
+  <div class="tracker-container">
+    <div id="habitTitle" class="habit-title">
+      My New Habits <span id="dayCounter" class="counter">0/31</span>
+    </div>
+
+    <div id="daysGrid" class="days-grid">
+      <!-- Days will be inserted here -->
+    </div>
+
+    <button class="reset-btn" id="resetBtn">Reset Button</button>
+  </div>
+
+<script>
+window.onload = function() {
+  const monthTitle = document.getElementById("monthTitle");
+  const habitTitle = document.getElementById("habitTitle");
+  const daysGrid = document.getElementById("daysGrid");
+  const dayCounter = document.getElementById("dayCounter");
+  const resetBtn = document.getElementById("resetBtn");
+
+  const today = new Date();
+  const currentMonth = today.getMonth();
+  const currentYear = today.getFullYear();
+  const currentDate = today.getDate();
+
+  const monthNames = [
+    "January","February","March","April","May","June",
+    "July","August","September","October","November","December"
+  ];
+  monthTitle.innerText = monthNames[currentMonth] + "🐢";
+
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+  // Load saved days from localStorage
+  let doneDays = JSON.parse(localStorage.getItem("doneDays")) || {};
+
+  // Generate the day circles
+  for (let i = 1; i <= daysInMonth; i++) {
+    const dayEl = document.createElement("div");
+    dayEl.className = "day";
+    dayEl.textContent = i;
+    dayEl.id = `day${i}`;
+
+    // If marked done previously, apply styling
+    if (doneDays[i]) dayEl.classList.add("done");
+
+    // Highlight current date with a pink border
+    if (i === currentDate) {
+      dayEl.style.border = "3px solid green";
+    }
+
+    // Add click toggle behavior
+    dayEl.addEventListener("click", () => {
+      dayEl.classList.toggle("done");
+      doneDays[i] = !doneDays[i];
+      if (!doneDays[i]) delete doneDays[i];
+      localStorage.setItem("doneDays", JSON.stringify(doneDays));
+      updateCounter();
+    });
+
+    daysGrid.appendChild(dayEl);
+  }
+
+  // Update the completed days counter
+  function updateCounter() {
+    const completedCount = Object.keys(doneDays).length;
+    dayCounter.textContent = `${completedCount}/${daysInMonth}`;
+  }
+  updateCounter();
+
+  // Make habit title editable via prompt
+  habitTitle.addEventListener("click", () => {
+    const newHabit = prompt("Enter your habit:", habitTitle.childNodes[0].textContent);
+    if (newHabit && newHabit.trim()) {
+      habitTitle.childNodes[0].textContent = newHabit + " ";
+    }
+  });
+
+  // Reset functionality
+  resetBtn.addEventListener("click", () => {
+    doneDays = {};
+    localStorage.removeItem("doneDays");
+    document.querySelectorAll(".day").forEach(el => el.classList.remove("done"));
+    updateCounter();
+  });
+};
+</script>
+</body>
+</html>
